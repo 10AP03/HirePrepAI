@@ -1,0 +1,22 @@
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/uploads/
+backend/dist/
+backend/coverage/
+
+# Frontend
+hireprep-ai-frontend/node_modules/
+hireprep-ai-frontend/dist/
+
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
