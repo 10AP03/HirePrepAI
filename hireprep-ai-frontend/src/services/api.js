@@ -1,18 +1,18 @@
 import axios from "axios";
 
+const api = axios.create({
 
-const api = axios.create({              // reusable Axios instance
-
-    baseURL: "http://localhost:5000/api",
+    // Production backend API
+    baseURL: "https://hireprepai.onrender.com/api",
 
     headers: {
         "Content-Type": "application/json",
     },
 
-    withCredentials: true,           // Allows cookies 
+    withCredentials: true,
 });
 
-api.interceptors.request.use(         // Attach JWT Token Automatically
+api.interceptors.request.use(
 
     (config) => {
 
