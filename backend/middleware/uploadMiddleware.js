@@ -1,5 +1,10 @@
 
 import multer from "multer";              // Multer is an Express middleware used to handle file uploads
+import fs from "fs";
+
+if (!fs.existsSync("uploads")) {
+    fs.mkdirSync("uploads", { recursive: true });
+}
 
 const storage = multer.diskStorage({        // Configure Storage
 
