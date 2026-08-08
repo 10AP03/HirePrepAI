@@ -1,6 +1,7 @@
 import Interview from "../models/Interview.js";
 import { generateInterviewQuestion, evaluateInterviewAnswer, generateFinalInterviewFeedback } from "../services/interviewAIService.js";
 import { updateSkillConfidence } from "../services/skillService.js";
+import ScheduledInterview from "../models/ScheduledInterview.js";
 
 export const startInterview = async (req, res) => {           //new AI interview session.
   try 
@@ -312,5 +313,107 @@ export const getCandidateAnalytics = async (req, res) => {
   {
     console.error("Candidate Analytics Error:", error);
     return res.status(500).json({success: false,message: "Failed to fetch candidate analytics.",error: error.message,});
+  }
+};
+
+export const getOpenScheduledInterviews = async (req, res) => {
+  try
+  {
+    const scheduledInterviews = await ScheduledInterview.find({ status: "Open" })
+      .populate("recruiter", "name")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Open scheduled interviews fetched successfully.",
+      count: scheduledInterviews.length,
+      scheduledInterviews
+    });
+  }
+  catch (error)
+  {
+    console.error("Get open scheduled interviews failed:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch scheduled interviews."
+    });
+  }
+};
+
+export const claimScheduledInterview = async (req, res) => {
+  try
+  {
+    const { scheduledId } = req.params;
+
+    const scheduledInterview = await ScheduledInterview.findById(scheduledId);
+
+    if (!scheduledInterview)
+    {
+      return res.status(404).json({
+        success: false,
+        message: "Scheduled interview not found."
+      });
+    }
+
+    if (scheduledInterview.status !== "Open")
+    {
+      return res.status(400).json({
+        success: false,
+        message: "This interview has already been claimed by another candidate."
+      });
+    }
+
+    // Generate the first question, same as a normal interview start
+    const firstQuestion = await generateInterviewQuestion({
+      interviewType: scheduledInterview.interviewType,
+      subject: scheduledInterview.subject,
+      topic: scheduledInterview.topic,
+      targetRole: scheduledInterview.targetRole,
+      difficulty: scheduledInterview.difficulty,
+      previousQuestions: []
+    });
+
+    const interview = await Interview.create({
+      candidate: req.user._id,
+      interviewType: scheduledInterview.interviewType,
+      subject: scheduledInterview.subject,
+      topic: scheduledInterview.topic,
+      targetRole: scheduledInterview.targetRole,
+      difficulty: scheduledInterview.difficulty,
+      numberOfQuestions: scheduledInterview.numberOfQuestions,
+      status: "In Progress",
+      questions: [
+        {
+          question: firstQuestion.question,
+          answer: "",
+          score: null,
+          feedback: ""
+        }
+      ]
+    });
+
+    scheduledInterview.status = "Claimed";
+    scheduledInterview.claimedBy = req.user._id;
+    scheduledInterview.interview = interview._id;
+    await scheduledInterview.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Interview claimed and started successfully.",
+      interview: {
+        interviewId: interview._id,
+        currentQuestion: firstQuestion.question,
+        questionNumber: 1,
+        totalQuestions: interview.numberOfQuestions
+      }
+    });
+  }
+  catch (error)
+  {
+    console.error("Claim scheduled interview failed:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to claim scheduled interview."
+    });
   }
 };

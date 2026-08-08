@@ -1,29 +1,53 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import CandidateSidebar from "../components/layout/Sidebar";
-import Navbar from "../components/layout/Navbar";
+import { FaBars, FaTimes } from "react-icons/fa";
+import CandidateSidebar from "../components/CandidateSidebar";
 
 const CandidateLayout = () => {
-    return (
-        <div className="flex h-screen bg-[#05070f] text-white overflow-hidden">
 
-            {/* Sidebar */}
-            <CandidateSidebar />
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-            {/* Main Section */}
-            <div className="flex flex-col flex-1 overflow-hidden">
+  return (
+    <div className="flex h-screen bg-[#05070f] overflow-hidden">
 
-                {/* Top Navigation */}
-                <Navbar />
+      {/* Mobile overlay backdrop */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden"
+        />
+      )}
 
-                {/* Dynamic Page Content */}
-                <main className="flex-1 overflow-y-auto p-6 bg-[#05070f]">
-                    <Outlet />
-                </main>
+      {/* Sidebar — slides in/out on mobile, fixed on desktop */}
+      <div
+        className={`fixed lg:static inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+      >
+        <CandidateSidebar onNavigate={() => setSidebarOpen(false)} />
+      </div>
 
-            </div>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-y-auto">
 
+        {/* Mobile top bar with hamburger */}
+        <div className="lg:hidden flex items-center gap-4 px-4 py-3 bg-[#060a12] border-b border-[#091520] sticky top-0 z-20">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-cyan-400 text-xl p-1"
+          >
+            <FaBars />
+          </button>
+          <h1 className="text-white font-semibold text-sm">HirePrep AI</h1>
         </div>
-    );
+
+        <div className="p-4 md:p-6">
+          <Outlet />
+        </div>
+
+      </div>
+
+    </div>
+  );
 };
 
 export default CandidateLayout;

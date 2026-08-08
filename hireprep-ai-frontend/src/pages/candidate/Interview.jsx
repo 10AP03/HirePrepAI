@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../services/api";
 import { FaMicrophone, FaStop, FaVolumeUp } from "react-icons/fa";
 
 const Interview = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Interview Configuration
 
@@ -59,6 +60,27 @@ const Interview = () => {
     }
 
   }, []);
+
+  // NEW: If arriving from a claimed scheduled interview, skip the config
+  // form and jump straight into the in-progress screen using the data
+  // already returned by claimScheduledInterview.
+
+  useEffect(() => {
+
+    const claimedInterview = location.state?.claimedInterview;
+
+    if (claimedInterview) {
+
+      setInterviewId(claimedInterview.interviewId);
+      setCurrentQuestion(claimedInterview.currentQuestion);
+      setQuestionNumber(claimedInterview.questionNumber);
+      setTotalQuestions(claimedInterview.totalQuestions);
+
+      setStarted(true);
+
+    }
+
+  }, [location.state]);
 
   // Read the current question aloud whenever it changes
 

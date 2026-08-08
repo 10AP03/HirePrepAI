@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import Resume from "../models/Resume.js";
 import Interview from "../models/Interview.js";
+import ScheduledInterview from "../models/ScheduledInterview.js";
+
 
 export const getAllCandidates = async (req, res) => {
   try 
@@ -185,5 +187,67 @@ export const getRecruiterAnalytics = async (req, res) => {
   {
     console.error("Recruiter Analytics Error:", error);
     return res.status(500).json({success: false,message: "Failed to fetch recruiter analytics.",error: error.message,});
+  }
+};
+
+export const createScheduledInterview = async (req, res) => {
+  try
+  {
+    const { interviewType, subject, topic, targetRole, difficulty, numberOfQuestions } = req.body;
+
+    if (!interviewType || !subject || !topic || !targetRole || !difficulty)
+    {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields."
+      });
+    }
+
+    const scheduledInterview = await ScheduledInterview.create({
+      recruiter: req.user._id,
+      interviewType,
+      subject,
+      topic,
+      targetRole,
+      difficulty,
+      numberOfQuestions: numberOfQuestions || 5,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Interview scheduled successfully.",
+      scheduledInterview
+    });
+  }
+  catch (error)
+  {
+    console.error("Create scheduled interview failed:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to schedule interview."
+    });
+  }
+};
+
+export const getMyScheduledInterviews = async (req, res) => {
+  try
+  {
+    const scheduledInterviews = await ScheduledInterview.find({ recruiter: req.user._id })
+      .populate("claimedBy", "name email")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Scheduled interviews fetched successfully.",
+      scheduledInterviews
+    });
+  }
+  catch (error)
+  {
+    console.error("Get scheduled interviews failed:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch scheduled interviews."
+    });
   }
 };

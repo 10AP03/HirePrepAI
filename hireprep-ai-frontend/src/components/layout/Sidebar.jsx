@@ -12,7 +12,7 @@ import {
     FaSignOutAlt,
 } from "react-icons/fa";
 
-const CandidateSidebar = () => {
+const CandidateSidebar = ({ onNavigate }) => {
     const { logout, user } = useAuth();
 
     const menuItems = [
@@ -87,6 +87,7 @@ const CandidateSidebar = () => {
                     <NavLink
                         key={item.name}
                         to={item.path}
+                        onClick={() => onNavigate?.()}
                         className={({ isActive }) =>
                             `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm
                             ${

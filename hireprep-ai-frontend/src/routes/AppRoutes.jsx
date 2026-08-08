@@ -49,6 +49,8 @@ const AppRoutes = () => {
                         <Route path="analytics" element={<Analytics />} />
                         <Route path="skill-dashboard" element={<SkillDashboard />} />
                         <Route path="interview-history" element={<InterviewHistory />} />
+                        <Route path="scheduled-interviews" element={<ScheduledInterviews />} /> {/* candidate block */}
+                        <Route path="create-interview" element={<CreateInterview />} /> {/* recruiter block */}
                     </Route>
                 </Route>
 
