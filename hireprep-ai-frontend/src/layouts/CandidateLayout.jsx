@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import CandidateSidebar from "../components/CandidateSidebar";
+import CandidateSidebar from "../components/layout/Sidebar";
 
 const CandidateLayout = () => {
 

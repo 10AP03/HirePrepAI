@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
-import RecruiterSidebar from "../components/RecruiterSidebar";
+import RecruiterSidebar from "../components/recruiter/RecruiterSidebar";
 
 const RecruiterLayout = () => {
 
