@@ -1,16 +1,15 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
     FaBrain,
     FaHome,
     FaUsers,
-    FaBriefcase,
     FaTrophy,
+    FaPlusCircle,
     FaSignOutAlt,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
-const RecruiterSidebar = () => {
+const RecruiterSidebar = ({ onNavigate }) => {
     const { logout, user } = useAuth();
     const navigate = useNavigate();
 
@@ -29,6 +28,11 @@ const RecruiterSidebar = () => {
             name: "Candidates",
             path: "/recruiter/candidates",
             icon: <FaUsers />,
+        },
+        {
+            name: "Schedule Interview",
+            path: "/recruiter/create-interview",
+            icon: <FaPlusCircle />,
         },
     ];
 
@@ -66,6 +70,7 @@ const RecruiterSidebar = () => {
                     <NavLink
                         key={item.name}
                         to={item.path}
+                        onClick={() => onNavigate?.()}
                         className={({ isActive }) =>
                             `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm
                             ${
@@ -86,6 +91,7 @@ const RecruiterSidebar = () => {
 
                 <NavLink
                     to="/recruiter/rankings"
+                    onClick={() => onNavigate?.()}
                     className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm
                         ${

@@ -8,6 +8,7 @@ import {
     FaHistory,
     FaChartBar,
     FaBrain,
+    FaBell,
     FaCog,
     FaSignOutAlt,
 } from "react-icons/fa";
@@ -37,6 +38,11 @@ const CandidateSidebar = ({ onNavigate }) => {
             icon: <FaRobot />,
         },
         {
+            name: "Scheduled Interviews",
+            path: "/candidate/scheduled-interviews",
+            icon: <FaBell />,
+        },
+        {
             name: "Interview History",
             path: "/candidate/interview-history",
             icon: <FaHistory />,
@@ -48,7 +54,7 @@ const CandidateSidebar = ({ onNavigate }) => {
         },
         {
             name: "Skill Dashboard",
-            path: "/candidate/skill-dashboard", // FIXED: was /candidate/skills
+            path: "/candidate/skill-dashboard",
             icon: <FaBrain />,
         },
     ];
