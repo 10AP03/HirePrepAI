@@ -13,11 +13,13 @@ import InterviewReport from "../pages/candidate/InterviewReport";
 import Analytics from "../pages/candidate/Analytics";
 import SkillDashboard from "../pages/candidate/SkillDashboard";
 import InterviewHistory from "../pages/candidate/InterviewHistory";
+import ScheduledInterviews from "../pages/candidate/ScheduledInterviews";
 
 // Recruiter Pages
 import RecruiterDashboard from "../pages/recruiter/Dashboard";
 import Candidates from "../pages/recruiter/Candidates";
 import CandidateProfile from "../pages/recruiter/CandidateProfile";
+import CreateInterview from "../pages/recruiter/CreateInterview";
 
 // Layouts
 import CandidateLayout from "../layouts/CandidateLayout";
@@ -49,8 +51,7 @@ const AppRoutes = () => {
                         <Route path="analytics" element={<Analytics />} />
                         <Route path="skill-dashboard" element={<SkillDashboard />} />
                         <Route path="interview-history" element={<InterviewHistory />} />
-                        <Route path="scheduled-interviews" element={<ScheduledInterviews />} /> {/* candidate block */}
-                        <Route path="create-interview" element={<CreateInterview />} /> {/* recruiter block */}
+                        <Route path="scheduled-interviews" element={<ScheduledInterviews />} />
                     </Route>
                 </Route>
 
@@ -60,6 +61,7 @@ const AppRoutes = () => {
                         <Route path="dashboard" element={<RecruiterDashboard />} />
                         <Route path="candidates" element={<Candidates />} />
                         <Route path="candidate/:id" element={<CandidateProfile />} />
+                        <Route path="create-interview" element={<CreateInterview />} />
                     </Route>
                 </Route>
 
