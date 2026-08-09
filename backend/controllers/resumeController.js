@@ -181,14 +181,20 @@ export const analyzeResume = async (req, res) => {
             });
         }
 
-        const analysis = await analyzeResumeWithAI(extractedText);            // Send the extracted resume text to the AI service
-        resume.extractedText = extractedText;                               // Store the extracted text and structured AI analysis
+        const analysis = await analyzeResumeWithAI(extractedText);
+        if (!analysis.isResume) {
+            return res.status(422).json({
+                success: false,
+                message: analysis.aiFeedback || "The uploaded document does not appear to be a resume. Please upload a proper resume.",
+            });
+        }
+        resume.extractedText = extractedText;
         resume.extractedSkills = analysis.extractedSkills;
         resume.atsScore = analysis.atsScore;
         resume.aiFeedback = analysis.aiFeedback;
         resume.status = "Analyzed";
 
-        await resume.save();                            // Persist the updated Resume document in MongoDB.
+        await resume.save();                          // Persist the updated Resume document in MongoDB.
 
         try
         {

@@ -19,16 +19,24 @@ const analyzeResumeWithAI = async (resumeText) => {
           role: "system",
           content: `
           You are a strict, senior ATS resume analyzer for technical roles (software, AI/ML, engineering).
-          Your scoring must be discriminating — a resume with real, deployed projects and depth should score
-          meaningfully higher than a resume with none. Do NOT cluster scores in a narrow "safe" range.
-          Be honest and critical, not encouraging.
 
-          Return ONLY valid JSON in this structure:
-          {
-            "atsScore": 0,
-            "extractedSkills": [],
-            "aiFeedback": ""
-          }
+          STEP 1 — DOCUMENT VALIDATION (do this first, before anything else):
+          Determine whether the provided text is actually a personal resume/CV — a document whose primary
+          purpose is to represent one specific person's education, skills, projects, and experience for
+          job/internship applications.
+
+          It is NOT a resume if it is, for example: a lab report, academic assignment, project report,
+          research paper, class notes, textbook excerpt, code file, article, or any other document —
+          even if it happens to mention technical terms, programming languages, or tools.
+          The mere presence of skill keywords (e.g. "Java", "Python") does NOT make something a resume.
+          A real resume has clear personal identity markers: a name/header, contact-style structure,
+          and organized sections like Education, Skills, Projects, or Experience framed around one candidate.
+
+          If it is NOT a resume, set "isResume" to false, set "atsScore" to 0, leave "extractedSkills" as
+          an empty array, and set "aiFeedback" to a short, clear message explaining that the uploaded
+          document does not appear to be a resume and a proper resume should be uploaded instead.
+
+          STEP 2 — ONLY IF it IS a genuine resume, proceed with full ATS analysis using this rubric:
 
           SCORING RUBRIC — atsScore is the sum of these weighted categories (max 100):
 
@@ -66,18 +74,27 @@ const analyzeResumeWithAI = async (resumeText) => {
             should score in the 76-92 range.
           - Scores above 92 should be rare and reserved for exceptional, industry-ready resumes.
 
+          Return ONLY valid JSON in this exact structure:
+          {
+            "isResume": true,
+            "atsScore": 0,
+            "extractedSkills": [],
+            "aiFeedback": ""
+          }
+
           Rules:
-          1. atsScore must be a number between 0 and 100, calculated by summing the category scores above.
-          2. extractedSkills must be an array of technical skills explicitly present in the resume.
-          3. aiFeedback must contain specific, critical, and practical feedback — mention concrete gaps
-             (e.g. "no deployed projects", "no quantified outcomes") rather than generic encouragement.
-          4. Do not include markdown.
-          5. Do not include text outside the JSON object.
+          1. isResume must be a boolean — true only if this is genuinely a personal resume/CV.
+          2. atsScore must be a number between 0 and 100 (0 if isResume is false).
+          3. extractedSkills must be an array of technical skills explicitly present in the resume (empty if isResume is false).
+          4. aiFeedback must contain specific, critical, practical feedback if it is a resume, or a clear
+             rejection message if it is not.
+          5. Do not include markdown.
+          6. Do not include text outside the JSON object.
           `,
         },
         {
           role: "user",
-          content: `Analyze the following resume:${resumeText}`,
+          content: `Analyze the following document:${resumeText}`,
         },
       ],
     });
