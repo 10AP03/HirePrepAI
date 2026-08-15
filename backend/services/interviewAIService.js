@@ -23,7 +23,7 @@ export const generateInterviewQuestion = async ({           // Generates one int
 
     // Send interview configuration and previous questions to the AI.
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: [
       {
         role: "system",
@@ -82,7 +82,7 @@ export const evaluateInterviewAnswer = async ({
   try 
   {
     const completion = await groq.chat.completions.create({     // Send interview context, question, and candidate answer to Groq
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-120b",
     messages: [
     {
       role: "system",
@@ -179,7 +179,7 @@ export const generateFinalInterviewFeedback = async ({
       "finalFeedback": "Overall interview feedback here."
     }`;
 
-    const completion = await groq.chat.completions.create({model: "llama-3.3-70b-versatile",
+    const completion = await groq.chat.completions.create({model: "openai/gpt-oss-120b",
       messages: [
         {
           role: "system",
